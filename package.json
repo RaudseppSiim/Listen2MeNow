@@ -10,6 +10,9 @@
   "author": "Siim Raudsepp",
   "license": "ISC",
   "dependencies": {
+    "@slack/events-api": "^2.3.3",
+    "@slack/rtm-api": "^5.0.5",
+    "@slack/web-api": "^5.10.0",
     "body-parser": "^1.19.0",
     "express": "^4.17.1",
     "ffmpeg": "0.0.4",

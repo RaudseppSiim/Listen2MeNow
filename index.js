@@ -4,18 +4,51 @@ const {
 } = require("child_process");
 const configs = require("./config.json")
 const app = express()
+
 var fs = require('fs');
 var ffmpeg = require('ffmpeg');
 const RtspServer = require('rtsp-streaming-server').default;
 const port = 3000
+const expressport = 3001
 const ytsearch = require('youtube-search');
+const { createEventAdapter } = require('@slack/events-api');
+const { WebClient } = require('@slack/web-api');
+const slackEvents = createEventAdapter(configs.slackSignToke);
+const token = configs.slackToken
+const webcli = new WebClient(token);
+const conversationId = 'C016TJ0MX41';
+app.use('/slack/events', slackEvents.expressMiddleware());
+// (async () => {
+//   // See: https://api.slack.com/methods/chat.postMessage
+//   const res = await webcli.chat.postMessage({ channel: conversationId, text: 'Hello there' });
+
+//   // `res` contains information about the posted message
+//   console.log('Message sent: ', res.ts);
+// })();
+slackEvents.on('message', (event) => {
+    console.log(`Received a message event: user ${event.user} in channel ${event.channel} says ${event.text}`);
+    console.log(event.text)
+    var message = event.text
+    if(message.includes("!addSong")){
+        var search = message.replace("!addSong", "")
+        addToQueue(search)
+    }
+});
+slackEvents.on('error', console.error);
+
+// Start a basic HTTP server
+slackEvents.start(port).then(() => {
+// Listening on path '/slack/events' by default
+console.log(`server listening on port ${port}`);
+});
+  
 // app.set('view engine', 'html');
 var queue = [{
     song: "",
     videoName:"",
     sender: ""
 }];
-const server = new RtspServer({
+const RTSPserver = new RtspServer({
     serverPort: 5554,
     clientPort: 6554,
     rtpPortStart: 10000,
@@ -110,4 +143,4 @@ function letsFFthisshit() {
 
 //run();
 
-app.listen(port,'0.0.0.0', () => console.log(`Example app listening at http://localhost:${port}`))
+app.listen(expressport,'0.0.0.0', () => console.log(`Example app listening at http://localhost:${expressport}`))
