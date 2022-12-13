@@ -14,7 +14,7 @@
     "@slack/rtm-api": "^5.0.5",
     "@slack/web-api": "^5.10.0",
     "body-parser": "^1.19.0",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "ffmpeg": "0.0.4",
     "rtsp-streaming-server": "^2.0.6",
     "youtube-search": "^1.1.4",
